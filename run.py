@@ -30,8 +30,7 @@ def create_blocks():
                 + config.scoreboard_height
                 + j * (config.block_size[1] + config.spacing[1])
             )
-            color_index = j % len(config.colors)
-            color = config.colors[color_index]
+            color = (255, 0, 0) # 블록 빨간색으로 설정
             block = Block(color, (x, y))
             BLOCKS.append(block)
 

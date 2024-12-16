@@ -25,9 +25,10 @@ class Basic:
 
 
 class Block(Basic):
-    def __init__(self, color: tuple, pos: tuple = (0,0), alive = True):
+    def __init__(self, color: tuple, pos: tuple = (0,0), HP : int = 3, alive = True):
         super().__init__(color, 0, pos, config.block_size)
         self.pos = pos
+        self.HP = HP
         self.alive = alive
 
     def draw(self, surface) -> None:
@@ -36,14 +37,23 @@ class Block(Basic):
     def collide(self, blocks : list, balls : list):
         # ============================================
         # TODO: Implement an event when block collides with a ball
-        self.alive = False
-        blocks.remove(self) # block 삭제
-        self.new_block(balls)
+        self.HP -= 1
+        if self.HP == 3:
+            self.color = (255, 0, 0) # 빨간색
+        elif self.HP == 2: 
+            self.color = (255, 165, 0) # 주황색
+        elif self.HP == 1: 
+            self.color = (255, 255, 0) # 노란색
         
-    def new_block(self, balls: list):
+        if self.HP <= 0:
+            self.alive = False
+            blocks.remove(self) # block 삭제
+            self.new_block(balls)
+        
+    def new_block(self, balls: list): # 블록이 깨지면 랜덤확률로 공 생성
         # 1부터 10까지 난수 생성하여 2 이하인 경우 새로운 공 생성 -> 20% 확률
         if random.randint(1, 10) <= 2:
-            # 공 색깔 빨간색 또는 파란색으로 랜덤 설정
+            # 공의 색깔 : 빨간색 또는 파란색으로 랜덤 설정
             new_ball_color = random.choice([(255, 0, 0), (0, 0, 255)])
             # 공의 위치 지정
             new_ball_pos = (self.rect.centerx, self.rect.centery)
