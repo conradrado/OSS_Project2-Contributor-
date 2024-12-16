@@ -56,14 +56,14 @@ def tick():
                 start = True
             paddle.move_paddle(event)
 
-    for ball in BALLS:
+    for ball in BALLS[:]:
         if start:
             ball.move()
         else:
             ball.rect.centerx = paddle.rect.centerx
             ball.rect.bottom = paddle.rect.top
 
-        ball.collide_block(BLOCKS)
+        ball.collide_block(BLOCKS, BALLS)
         ball.collide_paddle(paddle)
         ball.hit_wall()
         if ball.alive() == False:

@@ -33,11 +33,24 @@ class Block(Basic):
     def draw(self, surface) -> None:
         pygame.draw.rect(surface, self.color, self.rect)
     
-    def collide(self, blocks : list):
+    def collide(self, blocks : list, balls : list):
         # ============================================
         # TODO: Implement an event when block collides with a ball
         self.alive = False
         blocks.remove(self) # block 삭제
+        self.new_block(balls)
+        
+    def new_block(self, balls: list):
+        # 1부터 10까지 난수 생성하여 2 이하인 경우 새로운 공 생성 -> 20% 확률
+        if random.randint(1, 10) <= 2:
+            # 공 색깔 빨간색 또는 파란색으로 랜덤 설정
+            new_ball_color = random.choice([(255, 0, 0), (0, 0, 255)])
+            # 공의 위치 지정
+            new_ball_pos = (self.rect.centerx, self.rect.centery)
+            # 새로운 공 객체 생성 후 리스트에 추가
+            new_ball = Ball(pos = new_ball_pos)
+            new_ball.color = new_ball_color
+            balls.append(new_ball)
 
 
 class Paddle(Basic):
@@ -66,12 +79,12 @@ class Ball(Basic):
     def draw(self, surface):
         pygame.draw.ellipse(surface, self.color, self.rect)
 
-    def collide_block(self, blocks: list):
+    def collide_block(self, blocks: list, balls : list):
         # ============================================
         # TODO: Implement an event when the ball hits a block
         for block in blocks:
             if self.rect.colliderect(block.rect) and block.alive: # 충돌 여부 확인
-                block.collide(blocks)      # block 없애기
+                block.collide(blocks, balls)      # block 없애기
                 self.dir = 360 - self.dir  # 공을 반사
 
     def collide_paddle(self, paddle: Paddle) -> None:
